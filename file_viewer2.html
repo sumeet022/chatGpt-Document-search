@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Viewer</title>
+<style>
+  #pdf-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  canvas {
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<div id="pdf-container"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+<script>
+var url = 'https://cresendrugdata.blob.core.windows.net/cresendev/apps/mm/jazz/6.Cresen_whitepapers/SpendMate%20Witepaper.pdf?se=2023-11-08T13%3A27%3A32Z&sp=r&sv=2023-08-03&sr=b&sig=HkXRKZJ41MQY%2B6NFJVHkhDc1hGnj2jcUr3Nm5CNlgHI%3D';
+
+var pdfjsLib = window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
+
+pdfjsLib.getDocument(url).promise.then(function(pdf) {
+  var pdfContainer = document.getElementById('pdf-container');
+  
+  function renderPage(page) {
+    var scale = 1.5;
+    var viewport = page.getViewport({scale: scale});
+  
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+  
+    var renderContext = {
+      canvasContext: context,
+      viewport: viewport
+    };
+    page.render(renderContext);
+    pdfContainer.appendChild(canvas);
+  }
+  
+  var totalPages = pdf.numPages;
+  
+  for (var i = 1; i <= totalPages; i++) {
+    pdf.getPage(i).then(renderPage);
+  }
+});
+</script>
+</body>
+</html>

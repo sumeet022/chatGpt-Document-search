@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-color: #ffffff;
+            --accent-color: #1e80a3;
+            --secondary-color: #fcb25d;
+            --header-text-color: #ffffff;
+            --text-color: #333;
+            --link-color: #1e80a3;
+            --link-hover-color: #fcb25d;
+            --font-family: 'Roboto', sans-serif;
+            --border-radius: 10px;
+            --box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            --hover-box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            --transition-speed: 0.3s;
+            --list-item-bg: linear-gradient(135deg, #ffffff 0%, #f6f8fa 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            background-color: var(--main-color);
+            color: var(--text-color);
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-image: linear-gradient(to right, var(--accent-color), var(--secondary-color));
+            color: var(--header-text-color);
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        #scrollable-list {
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--main-color);
+        }
+
+        #scrollable-list ol {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            counter-reset: list-counter;
+        }
+
+        #scrollable-list li {
+            background: var(--list-item-bg);
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: box-shadow var(--transition-speed), transform var(--transition-speed);
+            position: relative;
+            padding-left: 50px; /* Space for number */
+        }
+
+        #scrollable-list li:hover {
+            box-shadow: var(--hover-box-shadow);
+            transform: translateY(-3px);
+        }
+
+        #scrollable-list li::before {
+            content: counter(list-counter) ".";
+            counter-increment: list-counter;
+            position: absolute;
+            left: 10px; /* Adjust to not overlap the content area */
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition-speed);
+        }
+
+        a:hover, a:focus {
+            color: var(--link-hover-color);
+            text-decoration: underline;
+        }
+
+        p {
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Scrollbar styles */
+        #scrollable-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #scrollable-list::-webkit-scrollbar-track {
+            background: var(--main-color);
+        }
+
+        #scrollable-list::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
+        #scrollable-list::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        .reference-title {
+            font-size: 1.125rem;
+            color: var(--text-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 0;
+                font-size: 24px;
+            }
+
+            #scrollable-list {
+                padding: 1rem;
+            }
+
+            #scrollable-list li {
+                padding: 1rem;
+                padding-left: 40px; /* Adjust for mobile */
+            }
+
+            #scrollable-list li::before {
+                left: 20px; /* Adjust for mobile */
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Citations</div>
+    <div id="scrollable-list">
+        <ol>
+            {% for reference in references %}
+                <li>
+                    <div class="reference-title">{{ reference.filename }}</div>
+                    <a href="{{ url_for('view_source_file', file_id=reference.file_id) }}" target="_blank">View File</a>
+                    <span> | </span>
+                    <a href="{{ reference.link }}" target="_blank">Download Source File</a>
+                    <p>{{ reference.text }}</p>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+</body>
+</html>
